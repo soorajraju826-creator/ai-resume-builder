@@ -1,7 +1,12 @@
 const Resume = require("../models/Resume");
 
+// ================= CREATE RESUME =================
 const createResume = async (req, res) => {
     try {
+
+        // Attach logged-in user's ID
+        req.body.user = req.user.id;
+
         const resume = await Resume.create(req.body);
 
         res.status(201).json({
@@ -17,9 +22,13 @@ const createResume = async (req, res) => {
     }
 };
 
+// ================= GET ALL RESUMES =================
 const getAllResumes = async (req, res) => {
     try {
-        const resumes = await Resume.find();
+
+        const resumes = await Resume.find({
+            user: req.user.id
+        });
 
         res.status(200).json({
             success: true,
@@ -33,10 +42,12 @@ const getAllResumes = async (req, res) => {
             message: error.message
         });
     }
-}; 
+};
 
+// ================= GET RESUME BY ID =================
 const getResumeById = async (req, res) => {
     try {
+
         const resume = await Resume.findById(req.params.id);
 
         if (!resume) {
@@ -59,8 +70,10 @@ const getResumeById = async (req, res) => {
     }
 };
 
+// ================= UPDATE RESUME =================
 const updateResume = async (req, res) => {
     try {
+
         const resume = await Resume.findByIdAndUpdate(
             req.params.id,
             req.body,
@@ -90,8 +103,10 @@ const updateResume = async (req, res) => {
     }
 };
 
+// ================= DELETE RESUME =================
 const deleteResume = async (req, res) => {
     try {
+
         const resume = await Resume.findByIdAndDelete(req.params.id);
 
         if (!resume) {
