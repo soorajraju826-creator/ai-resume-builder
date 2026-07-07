@@ -4,7 +4,6 @@ const Resume = require("../models/Resume");
 const createResume = async (req, res) => {
     try {
 
-        // Attach logged-in user's ID
         req.body.user = req.user.id;
 
         const resume = await Resume.create(req.body);
@@ -48,7 +47,10 @@ const getAllResumes = async (req, res) => {
 const getResumeById = async (req, res) => {
     try {
 
-        const resume = await Resume.findById(req.params.id);
+        const resume = await Resume.findOne({
+            _id: req.params.id,
+            user: req.user.id
+        });
 
         if (!resume) {
             return res.status(404).json({
@@ -74,8 +76,11 @@ const getResumeById = async (req, res) => {
 const updateResume = async (req, res) => {
     try {
 
-        const resume = await Resume.findByIdAndUpdate(
-            req.params.id,
+        const resume = await Resume.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                user: req.user.id
+            },
             req.body,
             {
                 new: true,
@@ -86,7 +91,7 @@ const updateResume = async (req, res) => {
         if (!resume) {
             return res.status(404).json({
                 success: false,
-                message: "Resume not found"
+                message: "Resume not found or unauthorized"
             });
         }
 
@@ -107,12 +112,15 @@ const updateResume = async (req, res) => {
 const deleteResume = async (req, res) => {
     try {
 
-        const resume = await Resume.findByIdAndDelete(req.params.id);
+        const resume = await Resume.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user.id
+        });
 
         if (!resume) {
             return res.status(404).json({
                 success: false,
-                message: "Resume not found"
+                message: "Resume not found or unauthorized"
             });
         }
 
