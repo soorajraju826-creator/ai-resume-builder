@@ -1,36 +1,36 @@
 import { Link } from "react-router-dom";
+import Button from "./Button";
 
 function Navbar() {
   return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-8 py-4">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b">
+
+      <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
 
         <Link
           to="/"
-          className="text-3xl font-bold text-blue-600"
+          className="text-3xl font-extrabold text-blue-600"
         >
           AI Resume Builder
         </Link>
 
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
 
-          <Link
+          <Button
+            text="Login"
             to="/login"
-            className="px-5 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition"
-          >
-            Login
-          </Link>
+            primary={false}
+          />
 
-          <Link
+          <Button
+            text="Register"
             to="/register"
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-          >
-            Register
-          </Link>
+          />
 
         </div>
 
       </div>
+
     </nav>
   );
 }

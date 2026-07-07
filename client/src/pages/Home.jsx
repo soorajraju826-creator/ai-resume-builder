@@ -1,4 +1,8 @@
 import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import Stats from "../components/Stats";
+import Features from "../components/Features";
+import HowItWorks from "../components/HowItWorks";
 
 function Home() {
   return (
@@ -6,44 +10,13 @@ function Home() {
 
       <Navbar />
 
-      <section className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center py-32 px-6">
+      <Hero />
 
-        <h1 className="text-6xl font-extrabold leading-tight">
+      <Stats />
 
-          Build Professional
+      <Features />
 
-          <span className="text-blue-600">
-            {" "}AI Resumes
-          </span>
-
-        </h1>
-
-        <p className="mt-8 text-xl text-gray-600 max-w-3xl">
-
-          Create ATS-friendly resumes using AI.
-
-          Design beautiful resumes, edit them easily,
-          and download professional PDFs instantly.
-
-        </p>
-
-        <div className="mt-10 flex gap-6">
-
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition">
-
-            Create Resume Free
-
-          </button>
-
-          <button className="border border-blue-600 text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-50 transition">
-
-            View Templates
-
-          </button>
-
-        </div>
-
-      </section>
+      <HowItWorks />
 
     </div>
   );
