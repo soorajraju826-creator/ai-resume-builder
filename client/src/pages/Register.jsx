@@ -38,14 +38,12 @@ function Register() {
 
       navigate("/login");
     } catch (error) {
-  console.log(error);
-
-  console.log(error.response);
-
-  console.log(error.response?.data);
-
-  alert(error.response?.data?.message || error.message);
-}
+      alert(
+        error.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-100 flex items-center justify-center px-4">
