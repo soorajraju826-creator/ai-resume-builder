@@ -6,7 +6,6 @@ import { FileText, LogOut, PlusCircle } from "lucide-react";
 
 function Dashboard() {
   const navigate = useNavigate();
-
   const { user, logout } = useContext(AuthContext);
 
   const [resumes, setResumes] = useState([]);
@@ -37,7 +36,6 @@ function Dashboard() {
     <div className="min-h-screen bg-gray-100">
 
       {/* Header */}
-
       <div className="bg-white shadow">
 
         <div className="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
@@ -46,11 +44,7 @@ function Dashboard() {
 
             <h1 className="text-3xl font-bold">
               Welcome,
-              <span className="text-blue-600">
-                {" "}
-                {user?.name}
-              </span>{" "}
-              👋
+              <span className="text-blue-600"> {user?.name}</span> 👋
             </h1>
 
             <p className="text-gray-500 mt-2">
@@ -72,7 +66,6 @@ function Dashboard() {
       </div>
 
       {/* Body */}
-
       <div className="max-w-7xl mx-auto px-8 py-10">
 
         <button
@@ -130,12 +123,14 @@ function Dashboard() {
                 <div className="mt-6 flex gap-3">
 
                   <button
+                    onClick={() => navigate(`/resume/${resume._id}`)}
                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
                   >
                     View
                   </button>
 
                   <button
+                    onClick={() => navigate(`/resume/edit/${resume._id}`)}
                     className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
                   >
                     Edit

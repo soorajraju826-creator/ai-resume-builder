@@ -5,21 +5,21 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
+import ResumeView from "./pages/ResumeView";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
 
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -38,8 +38,16 @@ function App() {
           }
         />
 
-      </Routes>
+        <Route
+          path="/resume/:id"
+          element={
+            <ProtectedRoute>
+              <ResumeView />
+            </ProtectedRoute>
+          }
+        />
 
+      </Routes>
     </BrowserRouter>
   );
 }
