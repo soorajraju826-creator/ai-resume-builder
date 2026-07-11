@@ -4,6 +4,10 @@ const Resume = require("../models/Resume");
 const createResume = async (req, res) => {
     try {
 
+        console.log("========== CREATE RESUME REQUEST ==========");
+        console.log("User:", req.user);
+        console.log("Body:", req.body);
+
         req.body.user = req.user.id;
 
         const resume = await Resume.create(req.body);
@@ -14,10 +18,15 @@ const createResume = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log("========== CREATE RESUME ERROR ==========");
+        console.log(error);
+
         res.status(500).json({
             success: false,
             message: error.message
         });
+
     }
 };
 
@@ -36,10 +45,14 @@ const getAllResumes = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
+
         res.status(500).json({
             success: false,
             message: error.message
         });
+
     }
 };
 
@@ -65,10 +78,14 @@ const getResumeById = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
+
         res.status(500).json({
             success: false,
             message: error.message
         });
+
     }
 };
 
@@ -101,10 +118,14 @@ const updateResume = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
+
         res.status(500).json({
             success: false,
             message: error.message
         });
+
     }
 };
 
@@ -130,10 +151,14 @@ const deleteResume = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
+
         res.status(500).json({
             success: false,
             message: error.message
         });
+
     }
 };
 

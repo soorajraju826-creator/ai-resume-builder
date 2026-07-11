@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../services/api";
+import { AuthContext } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,28 +23,16 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await API.post("/auth/login", formData);
+      await login(formData);
 
-      // Save JWT Token
-      localStorage.setItem("token", response.data.token);
-
-      // Save User
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
-
-      alert(response.data.message);
+      alert("Login successful");
 
       navigate("/dashboard");
-
     } catch (error) {
-
       alert(
         error.response?.data?.message ||
-        "Login failed"
+          "Login failed. Please try again."
       );
-
     }
   };
 
@@ -55,12 +45,12 @@ function Login() {
           ✨ AI Resume Builder
         </h2>
 
-        <h1 className="text-3xl font-bold text-center">
+        <h1 className="text-3xl font-bold text-center text-gray-800">
           Welcome Back
         </h1>
 
-        <p className="text-center text-gray-500 mt-2">
-          Login to continue building your resume.
+        <p className="text-gray-500 text-center mt-2">
+          Login to continue building your professional resume.
         </p>
 
         <form
@@ -69,9 +59,8 @@ function Login() {
         >
 
           <div>
-
             <label className="block mb-2 font-medium">
-              Email
+              Email Address
             </label>
 
             <input
@@ -83,11 +72,9 @@ function Login() {
               required
               className="w-full border rounded-lg px-4 py-4 outline-none focus:ring-4 focus:ring-blue-200"
             />
-
           </div>
 
           <div>
-
             <label className="block mb-2 font-medium">
               Password
             </label>
@@ -101,12 +88,11 @@ function Login() {
               required
               className="w-full border rounded-lg px-4 py-4 outline-none focus:ring-4 focus:ring-blue-200"
             />
-
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold transition duration-300"
           >
             Login
           </button>
@@ -119,7 +105,7 @@ function Login() {
 
           <Link
             to="/register"
-            className="text-blue-600 ml-2 font-semibold hover:underline"
+            className="text-blue-600 font-semibold ml-2 hover:underline"
           >
             Register
           </Link>
