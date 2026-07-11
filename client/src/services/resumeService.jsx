@@ -1,17 +1,32 @@
 import API from "./api";
 
-export const createResume = (resumeData) => {
-  return API.post("/resume", resumeData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+const getAuthConfig = () => ({
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
+// Create Resume
+export const createResume = async (resumeData) => {
+  return await API.post("/resume", resumeData, getAuthConfig());
 };
 
-export const getResumes = () => {
-  return API.get("/resume", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+// Get All Resumes
+export const getResumes = async () => {
+  return await API.get("/resume", getAuthConfig());
+};
+
+// Get Single Resume
+export const getResumeById = async (id) => {
+  return await API.get(`/resume/${id}`, getAuthConfig());
+};
+
+// Update Resume
+export const updateResume = async (id, resumeData) => {
+  return await API.put(`/resume/${id}`, resumeData, getAuthConfig());
+};
+
+// Delete Resume
+export const deleteResume = async (id) => {
+  return await API.delete(`/resume/${id}`, getAuthConfig());
 };
