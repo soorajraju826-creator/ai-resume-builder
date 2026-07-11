@@ -2,8 +2,8 @@ function ResumeForm({
   resumeData,
   setResumeData,
   handleSave,
+  buttonText = "Save Resume",
 }) {
-
   const handleChange = (e) => {
     setResumeData({
       ...resumeData,
@@ -96,7 +96,7 @@ function ResumeForm({
           onClick={handleSave}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold"
         >
-          Save Resume
+          {buttonText}
         </button>
 
       </div>

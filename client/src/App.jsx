@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeView from "./pages/ResumeView";
+import ResumeEdit from "./pages/ResumeEdit";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -43,6 +44,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ResumeView />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/resume/edit/:id"
+          element={
+            <ProtectedRoute>
+              <ResumeEdit />
             </ProtectedRoute>
           }
         />
