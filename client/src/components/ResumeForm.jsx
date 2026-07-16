@@ -1,3 +1,14 @@
+import {
+  User,
+  Mail,
+  Phone,
+  FileText,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  FolderOpen,
+} from "lucide-react";
+
 function ResumeForm({
   resumeData,
   setResumeData,
@@ -11,95 +22,166 @@ function ResumeForm({
     });
   };
 
+  const inputClass =
+    "w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  const sectionTitle = "flex items-center gap-2 text-xl font-semibold mb-4 text-gray-800";
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8">
 
-      <h2 className="text-2xl font-bold mb-6">
-        Resume Details
+      <h2 className="text-3xl font-bold mb-8">
+        Resume Builder
       </h2>
 
-      <div className="space-y-5">
+      {/* Personal Information */}
 
-        <input
-          type="text"
-          name="name"
-          value={resumeData.name}
-          onChange={handleChange}
-          placeholder="Full Name"
-          className="w-full border rounded-lg px-4 py-3"
-        />
+      <div className="mb-8">
 
-        <input
-          type="email"
-          name="email"
-          value={resumeData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          className="w-full border rounded-lg px-4 py-3"
-        />
+        <h3 className={sectionTitle}>
+          <User size={22} />
+          Personal Information
+        </h3>
 
-        <input
-          type="text"
-          name="phone"
-          value={resumeData.phone}
-          onChange={handleChange}
-          placeholder="Phone Number"
-          className="w-full border rounded-lg px-4 py-3"
-        />
+        <div className="space-y-4">
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={resumeData.name}
+            onChange={handleChange}
+            className={inputClass}
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={resumeData.email}
+            onChange={handleChange}
+            className={inputClass}
+          />
+
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone Number"
+            value={resumeData.phone}
+            onChange={handleChange}
+            className={inputClass}
+          />
+
+        </div>
+
+      </div>
+
+      {/* Summary */}
+
+      <div className="mb-8">
+
+        <h3 className={sectionTitle}>
+          <FileText size={22} />
+          Professional Summary
+        </h3>
 
         <textarea
           rows="4"
           name="summary"
+          placeholder="Write a short professional summary..."
           value={resumeData.summary}
           onChange={handleChange}
-          placeholder="Professional Summary"
-          className="w-full border rounded-lg px-4 py-3"
+          className={inputClass}
         />
 
-        <textarea
-          rows="4"
-          name="skills"
-          value={resumeData.skills}
-          onChange={handleChange}
-          placeholder="Skills (One per line)"
-          className="w-full border rounded-lg px-4 py-3"
-        />
+      </div>
 
-        <textarea
-          rows="4"
-          name="education"
-          value={resumeData.education}
-          onChange={handleChange}
-          placeholder="Education (One per line)"
-          className="w-full border rounded-lg px-4 py-3"
-        />
+      {/* Experience */}
+
+      <div className="mb-8">
+
+        <h3 className={sectionTitle}>
+          <Briefcase size={22} />
+          Experience
+        </h3>
 
         <textarea
           rows="4"
           name="experience"
+          placeholder="One experience per line"
           value={resumeData.experience}
           onChange={handleChange}
-          placeholder="Experience (One per line)"
-          className="w-full border rounded-lg px-4 py-3"
+          className={inputClass}
         />
+
+      </div>
+
+      {/* Education */}
+
+      <div className="mb-8">
+
+        <h3 className={sectionTitle}>
+          <GraduationCap size={22} />
+          Education
+        </h3>
+
+        <textarea
+          rows="4"
+          name="education"
+          placeholder="One education entry per line"
+          value={resumeData.education}
+          onChange={handleChange}
+          className={inputClass}
+        />
+
+      </div>
+
+      {/* Skills */}
+
+      <div className="mb-8">
+
+        <h3 className={sectionTitle}>
+          <Wrench size={22} />
+          Skills
+        </h3>
+
+        <textarea
+          rows="4"
+          name="skills"
+          placeholder="One skill per line"
+          value={resumeData.skills}
+          onChange={handleChange}
+          className={inputClass}
+        />
+
+      </div>
+
+      {/* Projects */}
+
+      <div className="mb-8">
+
+        <h3 className={sectionTitle}>
+          <FolderOpen size={22} />
+          Projects
+        </h3>
 
         <textarea
           rows="4"
           name="projects"
+          placeholder="One project per line"
           value={resumeData.projects}
           onChange={handleChange}
-          placeholder="Projects (One per line)"
-          className="w-full border rounded-lg px-4 py-3"
+          className={inputClass}
         />
 
-        <button
-          onClick={handleSave}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold"
-        >
-          {buttonText}
-        </button>
-
       </div>
+
+      <button
+        onClick={handleSave}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold text-lg"
+      >
+        {buttonText}
+      </button>
 
     </div>
   );

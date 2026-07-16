@@ -1,25 +1,142 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import ResumeHeader from "../components/ResumeHeader";
 import ResumeForm from "../components/ResumeForm";
 import ResumePreview from "../components/ResumePreview";
+import ProgressCard from "../components/ProgressCard";
+import TemplateSelector from "../components/TemplateSelector";
+import AIAssistant from "../components/AIAssistant";
+import ATSScoreCard from "../components/ATSScoreCard";
+import AppLayout from "../components/AppLayout";
+
 import { createResume } from "../services/resumeService";
+import {
+  generateSummary,
+  checkATS,
+} from "../services/aiService";
+
+const STORAGE_KEY = "resumeDraft";
 
 function ResumeBuilder() {
   const navigate = useNavigate();
 
-  const [resumeData, setResumeData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    summary: "",
-    skills: "",
-    education: "",
-    experience: "",
-    projects: "",
+  const [resumeData, setResumeData] = useState(() => {
+    const draft = localStorage.getItem(STORAGE_KEY);
+
+    if (draft) {
+      return JSON.parse(draft);
+    }
+
+    return {
+      name: "",
+      email: "",
+      phone: "",
+      summary: "",
+      skills: "",
+      education: "",
+      experience: "",
+      projects: "",
+    };
   });
+
+  const [selectedTemplate, setSelectedTemplate] =
+    useState("Classic");
+
+  const [saved, setSaved] = useState(true);
+
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const [atsLoading, setAtsLoading] = useState(false);
+
+  const [atsResult, setAtsResult] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(resumeData)
+    );
+
+    setSaved(false);
+
+    const timer = setTimeout(() => {
+      setSaved(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [resumeData]);
+
+  // ============================
+  // Generate AI Summary
+  // ============================
+
+  const handleGenerateSummary = async () => {
+    try {
+
+      setAiLoading(true);
+
+      const response =
+        await generateSummary(resumeData);
+
+      setResumeData((prev) => ({
+        ...prev,
+        summary: response.data.summary,
+      }));
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to generate summary."
+      );
+
+    } finally {
+
+      setAiLoading(false);
+
+    }
+  };
+
+  // ============================
+  // ATS Resume Checker
+  // ============================
+
+  const handleCheckATS = async () => {
+    try {
+
+      setAtsLoading(true);
+
+      const response =
+        await checkATS(resumeData);
+
+      setAtsResult(response.data.result);
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to analyze ATS score."
+      );
+
+    } finally {
+
+      setAtsLoading(false);
+
+    }
+  };
+
+  // ============================
+  // Save Resume
+  // ============================
 
   const handleSave = async () => {
     try {
+
       const data = {
         ...resumeData,
 
@@ -42,6 +159,8 @@ function ResumeBuilder() {
 
       await createResume(data);
 
+      localStorage.removeItem(STORAGE_KEY);
+
       alert("Resume saved successfully!");
 
       navigate("/dashboard");
@@ -50,22 +169,29 @@ function ResumeBuilder() {
 
       alert(
         error.response?.data?.message ||
-        "Failed to save resume"
+        "Failed to save resume."
       );
 
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <AppLayout>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <ResumeHeader saved={saved} />
 
-        <h1 className="text-4xl font-bold mb-8">
-          AI Resume Builder
-        </h1>
+      <TemplateSelector
+        selectedTemplate={selectedTemplate}
+        setSelectedTemplate={setSelectedTemplate}
+      />
 
-        <div className="grid lg:grid-cols-2 gap-8">
+      <ProgressCard
+        resumeData={resumeData}
+      />
+
+      <div className="grid xl:grid-cols-2 gap-8 items-start">
+
+        <div>
 
           <ResumeForm
             resumeData={resumeData}
@@ -73,15 +199,27 @@ function ResumeBuilder() {
             handleSave={handleSave}
           />
 
-          <ResumePreview
-            resumeData={resumeData}
+          <AIAssistant
+            onGenerateSummary={handleGenerateSummary}
+            onCheckATS={handleCheckATS}
+            aiLoading={aiLoading}
+            atsLoading={atsLoading}
+          />
+
+          <ATSScoreCard
+            atsResult={atsResult}
           />
 
         </div>
 
+        <ResumePreview
+          resumeData={resumeData}
+          selectedTemplate={selectedTemplate}
+        />
+
       </div>
 
-    </div>
+    </AppLayout>
   );
 }
 

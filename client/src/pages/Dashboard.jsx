@@ -1,15 +1,28 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Search,
+  FileText,
+} from "lucide-react";
+
 import { AuthContext } from "../context/AuthContext";
-import { getResumes } from "../services/resumeService";
-import { FileText, LogOut, PlusCircle } from "lucide-react";
+import {
+  getResumes,
+  deleteResume,
+} from "../services/resumeService";
+
+import AppLayout from "../components/AppLayout";
+import ResumeCard from "../components/ResumeCard";
+import DashboardStats from "../components/DashboardStats";
+import QuickActions from "../components/QuickActions";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchResumes();
@@ -21,134 +34,157 @@ function Dashboard() {
       setResumes(response.data.data);
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Unable to load resumes");
+
+      alert(
+        error.response?.data?.message ||
+        "Unable to load resumes."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this resume?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteResume(id);
+
+      alert("Resume deleted successfully!");
+
+      fetchResumes();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to delete resume."
+      );
+
+    }
   };
 
+  const filteredResumes = useMemo(() => {
+    return resumes.filter((resume) =>
+      resume.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    );
+  }, [search, resumes]);
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <AppLayout>
 
       {/* Header */}
-      <div className="bg-white shadow">
 
-        <div className="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
+      <div className="mb-10">
 
-          <div>
+        <h1 className="text-4xl font-bold">
 
-            <h1 className="text-3xl font-bold">
-              Welcome,
-              <span className="text-blue-600"> {user?.name}</span> 👋
-            </h1>
+          Welcome,
 
-            <p className="text-gray-500 mt-2">
-              Manage all your resumes from one place.
-            </p>
+          <span className="text-blue-600">
 
-          </div>
+            {" "}
+            {user?.name}
 
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-lg"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
+          </span>
+
+          👋
+
+        </h1>
+
+        <p className="text-gray-500 mt-2">
+          Manage your AI-powered resumes.
+        </p>
+
+      </div>
+
+      {/* Statistics */}
+
+      <DashboardStats
+        totalResumes={resumes.length}
+      />
+
+      {/* Quick Actions */}
+
+      <QuickActions />
+
+      {/* Search */}
+
+      <div className="relative w-full md:w-96 mb-8">
+
+        <Search
+          className="absolute left-4 top-3.5 text-gray-400"
+          size={20}
+        />
+
+        <input
+          type="text"
+          placeholder="Search Resume..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+        />
+
+      </div>
+
+      {/* Resume List */}
+
+      {loading ? (
+
+        <div className="bg-white rounded-2xl shadow p-12 text-center">
+
+          Loading...
 
         </div>
 
-      </div>
+      ) : filteredResumes.length === 0 ? (
 
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-8 py-10">
+        <div className="bg-white rounded-2xl shadow p-12 text-center">
 
-        <button
-          onClick={() => navigate("/resume-builder")}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl mb-10"
-        >
-          <PlusCircle size={22} />
-          Create Resume
-        </button>
+          <FileText
+            size={70}
+            className="mx-auto text-gray-400"
+          />
 
-        <h2 className="text-3xl font-bold mb-8">
-          My Resumes
-        </h2>
+          <h2 className="text-3xl font-bold mt-6">
+            No Resumes Found
+          </h2>
 
-        {loading ? (
+          <p className="text-gray-500 mt-3">
+            Create your first AI Resume.
+          </p>
 
-          <div className="bg-white rounded-xl shadow p-8 text-center">
-            Loading...
-          </div>
+        </div>
 
-        ) : resumes.length === 0 ? (
+      ) : (
 
-          <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
-            No resumes found.
-          </div>
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        ) : (
+          {filteredResumes.map((resume) => (
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ResumeCard
+              key={resume._id}
+              resume={resume}
+              onDelete={handleDelete}
+            />
 
-            {resumes.map((resume) => (
+          ))}
 
-              <div
-                key={resume._id}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border"
-              >
+        </div>
 
-                <FileText
-                  size={45}
-                  className="text-blue-600"
-                />
+      )}
 
-                <h3 className="text-2xl font-bold mt-5">
-                  {resume.name}
-                </h3>
-
-                <p className="text-gray-600 mt-2">
-                  {resume.email}
-                </p>
-
-                <p className="text-gray-500">
-                  {resume.phone}
-                </p>
-
-                <div className="mt-6 flex gap-3">
-
-                  <button
-                    onClick={() => navigate(`/resume/${resume._id}`)}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
-                  >
-                    View
-                  </button>
-
-                  <button
-                    onClick={() => navigate(`/resume/edit/${resume._id}`)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
-                  >
-                    Edit
-                  </button>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        )}
-
-      </div>
-
-    </div>
+    </AppLayout>
   );
 }
 

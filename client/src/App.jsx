@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeView from "./pages/ResumeView";
 import ResumeEdit from "./pages/ResumeEdit";
+import CoverLetter from "./pages/CoverLetter";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -15,12 +16,25 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* ================= Public Routes ================= */}
 
-        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        {/* ================= Protected Routes ================= */}
+
         <Route
           path="/dashboard"
           element={
@@ -53,6 +67,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ResumeEdit />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cover-letter"
+          element={
+            <ProtectedRoute>
+              <CoverLetter />
             </ProtectedRoute>
           }
         />

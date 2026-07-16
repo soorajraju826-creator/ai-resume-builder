@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import AppLayout from "../components/AppLayout";
+import ResumeHeader from "../components/ResumeHeader";
 import ResumeForm from "../components/ResumeForm";
 import ResumePreview from "../components/ResumePreview";
+import TemplateSelector from "../components/TemplateSelector";
+
 import {
   getResumeById,
   updateResume,
@@ -22,6 +27,11 @@ function ResumeEdit() {
     projects: "",
   });
 
+  const [selectedTemplate, setSelectedTemplate] =
+    useState("Classic");
+
+  const [saved, setSaved] = useState(true);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +41,7 @@ function ResumeEdit() {
   const fetchResume = async () => {
     try {
       const response = await getResumeById(id);
+
       const resume = response.data.data;
 
       setResumeData({
@@ -43,17 +54,40 @@ function ResumeEdit() {
         experience: (resume.experience || []).join("\n"),
         projects: (resume.projects || []).join("\n"),
       });
+
     } catch (error) {
+
       console.log(error);
-      alert("Unable to load resume.");
+
+      alert(
+        error.response?.data?.message ||
+        "Unable to load resume."
+      );
+
       navigate("/dashboard");
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
+  useEffect(() => {
+
+    setSaved(false);
+
+    const timer = setTimeout(() => {
+      setSaved(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [resumeData]);
+
   const handleUpdate = async () => {
     try {
+
       const updatedResume = {
         ...resumeData,
 
@@ -94,22 +128,27 @@ function ResumeEdit() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-2xl font-bold">
-        Loading Resume...
-      </div>
+      <AppLayout>
+        <div className="text-center py-32 text-2xl font-bold">
+          Loading Resume...
+        </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <AppLayout>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <ResumeHeader saved={saved} />
 
-        <h1 className="text-4xl font-bold mb-8">
-          Edit Resume
-        </h1>
+      <TemplateSelector
+        selectedTemplate={selectedTemplate}
+        setSelectedTemplate={setSelectedTemplate}
+      />
 
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid xl:grid-cols-2 gap-8 items-start">
+
+        <div>
 
           <ResumeForm
             resumeData={resumeData}
@@ -118,15 +157,16 @@ function ResumeEdit() {
             buttonText="Update Resume"
           />
 
-          <ResumePreview
-            resumeData={resumeData}
-          />
-
         </div>
+
+        <ResumePreview
+          resumeData={resumeData}
+          selectedTemplate={selectedTemplate}
+        />
 
       </div>
 
-    </div>
+    </AppLayout>
   );
 }
 
