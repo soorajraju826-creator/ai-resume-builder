@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ResumeHeader from "../components/ResumeHeader";
+
 import ResumeForm from "../components/ResumeForm";
 import ResumePreview from "../components/ResumePreview";
 import ProgressCard from "../components/ProgressCard";
@@ -178,12 +178,12 @@ function ResumeBuilder() {
   return (
     <AppLayout>
 
-      <ResumeHeader saved={saved} />
-
-      <TemplateSelector
-        selectedTemplate={selectedTemplate}
-        setSelectedTemplate={setSelectedTemplate}
-      />
+      <div className="mb-6">
+  <h1 className="text-3xl font-bold">AI Resume Builder</h1>
+  <p className="text-gray-500">
+    {saved ? "All changes saved" : "Saving..."}
+  </p>
+</div>
 
       <ProgressCard
         resumeData={resumeData}

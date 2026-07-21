@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import AppLayout from "../components/AppLayout";
-import ResumeHeader from "../components/ResumeHeader";
+
 import ResumeForm from "../components/ResumeForm";
 import ResumePreview from "../components/ResumePreview";
 import TemplateSelector from "../components/TemplateSelector";
@@ -139,7 +139,12 @@ function ResumeEdit() {
   return (
     <AppLayout>
 
-      <ResumeHeader saved={saved} />
+      <div className="mb-6">
+  <h1 className="text-3xl font-bold">Edit Resume</h1>
+  <p className="text-gray-500">
+    Update your resume information below.
+  </p>
+</div>
 
       <TemplateSelector
         selectedTemplate={selectedTemplate}
